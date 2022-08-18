@@ -18,7 +18,7 @@
 
                     <div class="mt-5">
                         <h2 class="text-center">Product Table</h2>
-                        <div class="nav justify-content-end"><a class="btn btn-success mb-2 " name="modal_button" id="modal_button" data-toggle="modal" data-target="#modal">Add New</a></div>
+                        <div class="nav justify-content-end"><a class="btn btn-success mb-2 " name="modal_button" id="modal_button" >Add New</a></div>
 
                         {{-- Modal --}}
                         
@@ -34,7 +34,7 @@
                                 <div class="modal-body">
                                     <form action="">
                                         @csrf
-                                        
+                                        <input type="hidden" name="id" id="id">
                                         <div class="form-group">
                                             <label for="product_name">Product Name</label>
                                             <input type="text" class="form-control" id="product_name" name="product_name" placeholder="Enter product name">
@@ -50,7 +50,8 @@
 
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary btnSave" name="btnSave" >Save</button>   
+                                        <button type="button" class="btn btn-primary btnSave" name="btnSave" id="btnSave">Save</button>   
+                                        <button type="button" class="btn btn-primary btnUpdate" name="btnUpdate" id="btnUpdate" >Update</button> 
                                     </div>
                                 </form>
                                 
@@ -105,23 +106,33 @@
 
         $('table tbody').html(product_data);
     }
+    function reset(){
+        $('#modal').find('input').each(function(){
+            $(this).val(null)
+        })
+    }
 
     $(document).ready(function(){
         $.ajax({
             url:"{{ route('seller.data_show') }}",
             type: "get",
-            dataType:"json",
             success:function(response){
                 drawProductRow(response);
             },
         });
-        document.getElementById('modal_button').addEventListener('click', function () {
-            document.getElementById('exampleModalLongTitle').innerText= "New Product";
+        
+        $(document).on('click', '#modal_button', function () {
+            $('#modal').find('.modal-title').text('New Product');
+            $('#btnUpdate').hide();
+            $('#btnSave').show();
+            $('#modal').modal('show');
+                
+            
         });
 
 
-
         $('button[name="btnSave"]').click(function(){
+            
                 $.ajax({
                     url:"{{ route('seller.add_product') }}",
                     type: "POST",
@@ -134,16 +145,63 @@
                     dataType:"json",
                     success:function(response){
                         $('#modal').modal('hide');
+                        reset();
                         console.log(response);
                         drawProductRow(response.products);
                     },
                 });
             
         });
-        
 
+        $(document).on('click', '#btnEdit', function () {
+            $('#modal').find('.modal-title').text('Edit Product');
+            $('#btnUpdate').show();
+            $('#btnSave').hide();
+            var id = $(this).val();
+            console.log(id);
+            reset();
+            $.ajax({
+                url: "/seller/edit_product/"+id,
+                type: "get",
+                success:function(response){
+                    $.each(response,function(key,value){
+                        $('#id').val(value.id);
+                        $('#product_name').val(value.product_name);
+                        $('#product_price').val(value.product_price);
+                        $('#company_name').val(value.company_name);
+                        $('#modal').modal('show');
+                    })
+                },
+            });
+                
+            
+        });
+        $(document).on('click', '#btnUpdate', function () {
+            var id = $('input[name="id"]').val()
+            console.log(id);
+            $.ajax({
+                url:"/seller/update_product/"+id,
+                type: "PUT",
+                data:{
+                    "_token": "{{ csrf_token() }}",
+                    product_name:$('input[name="product_name"]').val(),
+                    product_price:$('input[name="product_price"]').val(),
+                    company_name:$('input[name="company_name"]').val()
+                },
+                dataType:"json",
+                success:function(response){
+                    $('#modal').modal('hide');
+                    reset();
+                    console.log(response);
+                    drawProductRow(response.products);
+                },
+            });
+            
+                
+            
+        });
         $(document).on('click', '#btnDelete', function () {
-            var id = $('button[name="btnDelete"]').val()
+            var id = $(this).val()
             $.ajax({
                 url: "/seller/delete_product/"+id,
                 type: "DELETE",

@@ -59,7 +59,7 @@ class ProductController extends Controller
     public function edit($id)
     {
         $product = Product::find($id);
-        return view('seller_home')->with('product',$product);
+        return ['success'=>true, 'message'=> 'Inserted Successfully', 'product'=>$product];
     }
 
     /**
@@ -76,7 +76,7 @@ class ProductController extends Controller
         $product->product_price = $request->product_price;
         $product->company_name = $request->company_name;
         $product->save();
-        return ['success'=>true, 'message'=> 'Updated Successfully'];
+        return ['success'=>true, 'message'=> 'Updated Successfully', 'products'=>Product::all()];
     }
 
     /**
