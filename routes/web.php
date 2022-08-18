@@ -20,10 +20,17 @@ Route::get('/', function () {
 Auth::routes();
 Route::middleware(['isAdmin'])->group(function () { 
     Route::get('/admin/home', 'HomeController@admin_index')->name('admin.home');    
+    Route::get('/admin/data_show', 'ProductController@show')->name('admin.data_show');
+    Route::post('/admin/add_product', 'ProductController@store')->name('admin.add_product');
+    Route::get('/admin/edit_product/{id}', 'ProductController@edit')->name('admin.edit_product');
+    Route::put('/admin/update_product/{id}', 'ProductController@update')->name('admin.update_product');
+    Route::delete('/admin/delete_product/{id}', 'ProductController@destroy')->name('admin.delete_product');
 });
+
 // Route::get('/home', 'HomeController@index')->name('home');
 Route::middleware(['isCustomer'])->group(function () {   
-    Route::get('/home', 'HomeController@index')->name('home');
+    Route::get('/customer/home', 'HomeController@index')->name('home');
+    Route::get('/data_show', 'ProductController@show')->name('customer.data_show');
 });
 Route::middleware(['isSeller'])->group(function () {   
     Route::get('/seller/home', 'HomeController@seller_index')->name('seller.home');

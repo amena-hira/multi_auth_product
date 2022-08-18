@@ -25,7 +25,7 @@ class RedirectIfAuthenticated
             return redirect()->route('admin.home');
         }
         elseif (Auth::guard($guard)->check() && Auth::user()->role ==2) {
-            return redirect()->route('customer.home');
+            return redirect()->route('home');
         }
         elseif (Auth::guard($guard)->check() && Auth::user()->role ==3) {
             return redirect()->route('seller.home');
