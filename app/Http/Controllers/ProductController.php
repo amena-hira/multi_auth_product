@@ -76,7 +76,7 @@ class ProductController extends Controller
         $product->product_price = $request->product_price;
         $product->company_name = $request->company_name;
         $product->save();
-        return ['success'=>true, 'message'=> 'updated Successfully'];
+        return ['success'=>true, 'message'=> 'Updated Successfully'];
     }
 
     /**
@@ -88,6 +88,6 @@ class ProductController extends Controller
     public function destroy($id)
     {
         Product::find($id)->delete();
-        return ['success'=>true, 'message'=> 'deleted Successfully','products'=>Product::all()];
+        return ['success'=>true, 'message'=> 'Deleted Successfully','products'=>Product::all()];
     }
 }

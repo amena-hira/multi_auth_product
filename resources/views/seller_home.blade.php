@@ -87,35 +87,40 @@
 @section('script')
 
 <script>
+
+    function drawProductRow (products) {
+        var product_data = '';
+        var i=1;
+        $.each(products,function(key,value){
+            product_data += '<tr>';
+            product_data += '<td>'+i+'</td>';
+            product_data += '<td>'+value.product_name+'</td>';
+            product_data += '<td>'+value.product_price+'</td>';
+            product_data += '<td>'+value.company_name+'</td>';
+            product_data += '<td><button class="btn btn-success" name="btnEdit" id="btnEdit" value="'+value.id+'">Edit</button>';
+            product_data += '<button class="ml-2 btn btn-danger" name="btnDelete" id="btnDelete" value="'+value.id+'">Delete</button></td>';
+            product_data += '</tr>';
+            i++;
+        });
+
+        $('table tbody').html(product_data);
+    }
+
     $(document).ready(function(){
         $.ajax({
             url:"{{ route('seller.data_show') }}",
             type: "get",
             dataType:"json",
             success:function(response){
-                var product_data = '';
-                var i=1;
-                $.each(response,function(key,value){
-                    product_data += '<tr>';
-                    product_data += '<td>'+i+'</td>';
-                    product_data += '<td>'+value.product_name+'</td>';
-                    product_data += '<td>'+value.product_price+'</td>';
-                    product_data += '<td>'+value.company_name+'</td>';
-                    product_data += '<td><button class="btn btn-success" name="btnEdit" id="btnEdit" value="'+value.id+'">Edit</button>';
-                    product_data += '<button class="ml-2 btn btn-danger" name="btnDelete" id="btnDelete" value="'+value.id+'">Delete</button></td>';
-                    product_data += '</tr>';
-                    i++;
-                });
-                $('table tbody').html(product_data);
-
-                
-                
+                drawProductRow(response);
             },
         });
         document.getElementById('modal_button').addEventListener('click', function () {
             document.getElementById('exampleModalLongTitle').innerText= "New Product";
         });
-        
+
+
+
         $('button[name="btnSave"]').click(function(){
                 $.ajax({
                     url:"{{ route('seller.add_product') }}",
@@ -130,63 +135,31 @@
                     success:function(response){
                         $('#modal').modal('hide');
                         console.log(response);
-                        var product_data = '';
-                        var i=1;
-                        $.each(response.products,function(key,value){
-                            product_data += '<tr>';
-                            product_data += '<td>'+i+'</td>';
-                            product_data += '<td>'+value.product_name+'</td>';
-                            product_data += '<td>'+value.product_price+'</td>';
-                            product_data += '<td>'+value.company_name+'</td>';
-                            product_data += '<td><button class="btn btn-success" name="btnEdit" id="btnEdit" value="'+value.id+'">Edit</button>';
-                            product_data += '<button class="ml-2 btn btn-danger" name="btnDelete" id="btnDelete" value="'+value.id+'">Delete</button></td>';
-                            product_data += '</tr>';
-                            i++;
-                        });
-                        $('table tbody').html(product_data);
-                        // location.reload();
-                        
+                        drawProductRow(response.products);
                     },
                 });
             
         });
+        
 
         $(document).on('click', '#btnDelete', function () {
-            var id= $(this).val();
-            var url = '{{ route("seller.delete_product", ":id") }}';
-            url = url.replace(':id', id);
+            var id = $('button[name="btnDelete"]').val()
             $.ajax({
-                url: url,
-                type: "GET",
-                cache: false,
+                url: "/seller/delete_product/"+id,
+                type: "DELETE",
                 data:{
-                    _token:'{{ csrf_token() }}'
+                    _token:'{{ csrf_token() }}',
                 },
                 success:function(response){
                     console.log(response);
-                    var product_data = '';
-                    var i=1;
-                    $.each(response.products,function(key,value){
-                        product_data += '<tr>';
-                        product_data += '<td>'+i+'</td>';
-                        product_data += '<td>'+value.product_name+'</td>';
-                        product_data += '<td>'+value.product_price+'</td>';
-                        product_data += '<td>'+value.company_name+'</td>';
-                        product_data += '<td><button class="btn btn-success" name="btnEdit" id="btnEdit" value="'+value.id+'">Edit</button>';
-                        product_data += '<button class="ml-2 btn btn-danger" name="btnDelete" id="btnDelete" value="'+value.id+'">Delete</button></td>';
-                        product_data += '</tr>';
-                        i++;
-                    });
-                    $('table tbody').html(product_data);
-                        // location.reload();
-                        
+                    drawProductRow(response.products);
                 },
             });
                 
             
         });
         
-        
+    
 
             
         
