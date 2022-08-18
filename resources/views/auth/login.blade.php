@@ -19,7 +19,7 @@
 
                                 @error('email')
                                     <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
+                                        <strong> Must be a valid email/phone address. </strong>
                                     </span>
                                 @enderror
                             </div>

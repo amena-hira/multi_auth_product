@@ -34,7 +34,6 @@ Route::middleware(['isCustomer'])->group(function () {
 });
 Route::middleware(['isSeller'])->group(function () {   
     Route::get('/seller/home', 'HomeController@seller_index')->name('seller.home');
-    Route::get('/seller/product', 'ProductController@index')->name('seller.product');
     Route::get('/seller/data_show', 'ProductController@show')->name('seller.data_show');
     Route::post('/seller/add_product', 'ProductController@store')->name('seller.add_product');
     Route::get('/seller/edit_product/{id}', 'ProductController@edit')->name('seller.edit_product');

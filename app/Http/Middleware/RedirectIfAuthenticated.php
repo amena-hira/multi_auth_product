@@ -30,6 +30,7 @@ class RedirectIfAuthenticated
         elseif (Auth::guard($guard)->check() && Auth::user()->role ==3) {
             return redirect()->route('seller.home');
         }
+        
 
         return $next($request);
     }

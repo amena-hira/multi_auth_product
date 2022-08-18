@@ -14,7 +14,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return view('seller_product');
+        
     }
 
     /**
@@ -58,6 +58,7 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
+        
         $product = Product::find($id);
         return ['success'=>true, 'message'=> 'Inserted Successfully', 'product'=>$product];
     }

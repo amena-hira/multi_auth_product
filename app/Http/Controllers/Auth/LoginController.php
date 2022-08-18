@@ -59,30 +59,4 @@ class LoginController extends Controller
         return $request->only($this->username(), 'password');
     }
 
-    public function login(Request $request)
-    {
-        $input = $request->all();
-        $this->validate($request,[
-            'email'=>'required|email',
-            'password'=>'required'
-        ]);
-
-        if ( auth()->attempt(array('email'=>$input['email'], 'password'=>$input['password']))){
-            if (auth()->user()->role == 1) {
-                return redirect()->route('admin.home');
-            }
-            elseif (auth()->user()->role == 2) {
-                return redirect()->route('home');
-            }
-            elseif (auth()->user()->role == 3) {
-                return redirect()->route('seller.home');
-            }
-            
-
-        }else{
-            ;
-            return redirect()->route('login')->with(['email' => ['Email and/or password invalid.']])->withInput();
-            
-        }
-    }
 }
