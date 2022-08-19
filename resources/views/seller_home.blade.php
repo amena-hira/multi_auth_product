@@ -149,17 +149,16 @@
         
         $(document).on('click', '#btnSave', function (){
             let formData = new FormData($('#product_form')[0]);
-            // $('#imageField').hide();
             $.ajax({
                 url:"{{ route('seller.add_product') }}",
                 type: "POST",
                 data:formData,
-                dataType:"json",
                 contentType: false,
                 processData: false,
                 success:function(response){
-                    $('#modal').modal('hide');
+                    
                     reset();
+                    $('#modal').modal('hide');
                     console.log(response);
                     drawProductRow(response.products);
                 },
@@ -171,13 +170,13 @@
             $('#modal').find('.modal-title').text('Edit Product');
             $('#btnUpdate').show();
             $('#btnSave').hide();
-            // $('#imageField').show();
             var id = $(this).val();
             console.log(id);
             reset();
             $.ajax({
                 url: "/seller/edit_product/"+id,
                 type: "get",
+                
                 success:function(response){
                     let base = '{{ asset("img") }}';
                     $.each(response,function(key,value){
@@ -191,28 +190,29 @@
                     $('#modal').modal('show');
                 },
             });
+           
         });
 
         $(document).on('click', '#btnUpdate', function () {
             var id = $('input[name="id"]').val()
             console.log(id);
+            var formData = new FormData($('#product_form')[0]);
             $.ajax({
                 url:"/seller/update_product/"+id,
-                type: "PUT",
-                data:{
-                    "_token": "{{ csrf_token() }}",
-                    product_name:$('input[name="product_name"]').val(),
-                    product_price:$('input[name="product_price"]').val(),
-                    company_name:$('input[name="company_name"]').val()
-                },
-                dataType:"json",
+                type: "post",
+                data:formData,
+                contentType: false,
+                processData: false,
+                cache: false,
                 success:function(response){
-                    $('#modal').modal('hide');
+                    
                     reset();
+                    $('#modal').modal('hide');
                     console.log(response);
                     drawProductRow(response.products);
                 },
             });
+
             
                 
             

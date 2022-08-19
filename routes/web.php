@@ -37,7 +37,7 @@ Route::middleware(['isSeller'])->group(function () {
     Route::get('/seller/data_show', 'ProductController@show')->name('seller.data_show');
     Route::post('/seller/add_product', 'ProductController@store')->name('seller.add_product');
     Route::get('/seller/edit_product/{id}', 'ProductController@edit')->name('seller.edit_product');
-    Route::put('/seller/update_product/{id}', 'ProductController@update')->name('seller.update_product');
+    Route::post('/seller/update_product/{id}', 'ProductController@update')->name('seller.update_product');
     Route::delete('/seller/delete_product/{id}', 'ProductController@destroy')->name('seller.delete_product');
 });
 

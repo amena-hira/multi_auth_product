@@ -40,7 +40,7 @@ class ProductController extends Controller
             'product_name' => 'required|max:191',
             'product_price' => 'required',
             'company_name' => 'required|max:191',
-            'image' => 'image|mimes:jpeg,png,jpg|max:2048',
+            'image' => 'image|mimes:jpeg,png,jpg',
         ]);
         if($validator->fails()){
             return response()->json([
@@ -104,12 +104,36 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $product = Product::find($id);
-        $product->product_name = $request->product_name;
-        $product->product_price = $request->product_price;
-        $product->company_name = $request->company_name;
-        $product->save();
-        return ['success'=>true, 'message'=> 'Updated Successfully', 'products'=>Product::all()];
+        
+        $validator = Validator::make($request->all(),[
+            'product_name' => 'required|max:191',
+            'product_price' => 'required',
+            'company_name' => 'required|max:191',
+            'image' => 'image|mimes:jpeg,png,jpg',
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'success' => false,
+                'message'=> $validator->messages(),
+                'products'=>Product::all()
+
+            ]);
+        }
+        else{
+            $product = Product::find($id);
+            $product->product_name = $request->product_name;
+            $product->product_price = $request->product_price;
+            $product->company_name = $request->company_name;
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $fileName = $file->getClientOriginalName();
+                $file->move('img',$fileName );
+                $product->image = $fileName;
+            }
+            $product->save();
+            return ['success'=>true, 'message'=> 'Updated Successfully', 'products'=>Product::all()];
+        }
+        
     }
 
     /**
