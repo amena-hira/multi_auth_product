@@ -22,6 +22,7 @@
                             <thead>
                               <tr>
                                 <th scope="col">SL</th>
+                                <th scope="col">Product Image</th>
                                 <th scope="col">Product Name</th>
                                 <th scope="col">Product Price</th>
                                 <th scope="col">Company Name</th>
@@ -35,9 +36,9 @@
                           </table>
                     </div>
                 </div>
-                <div class="card-footer text-muted">
-                    all rights reserved to Amena Akhter Hira
-                  </div>
+                <div class="card-footer text-muted text-center">
+                    Ⓒ all rights reserved to Amena Akhter Hira
+                </div>
             </div>
         </div>
     </div>
@@ -48,9 +49,11 @@
     function drawProductRow (products) {
         var product_data = '';
         var i=1;
+        let base = '{{ asset("img") }}';
         $.each(products,function(key,value){
             product_data += '<tr>';
             product_data += '<td>'+i+'</td>';
+            product_data += '<td><img class="rounded img-fluid" width="100" height="130" src="'+base+'/'+value.image+'"> </td>';
             product_data += '<td>'+value.product_name+'</td>';
             product_data += '<td>'+value.product_price+'</td>';
             product_data += '<td>'+value.company_name+'</td>';
