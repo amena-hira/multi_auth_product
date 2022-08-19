@@ -23,7 +23,7 @@ Route::middleware(['isAdmin'])->group(function () {
     Route::get('/admin/data_show', 'ProductController@show')->name('admin.data_show');
     Route::post('/admin/add_product', 'ProductController@store')->name('admin.add_product');
     Route::get('/admin/edit_product/{id}', 'ProductController@edit')->name('admin.edit_product');
-    Route::put('/admin/update_product/{id}', 'ProductController@update')->name('admin.update_product');
+    Route::post('/admin/update_product/{id}', 'ProductController@update')->name('admin.update_product');
     Route::delete('/admin/delete_product/{id}', 'ProductController@destroy')->name('admin.delete_product');
 });
 
