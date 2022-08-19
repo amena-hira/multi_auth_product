@@ -32,7 +32,7 @@
                                 </button>
                                 </div>
                                 <div class="modal-body">
-                                    <form action="">
+                                    <form action="" id="product_form" method="POST" enctype="multipart/form-data">
                                         @csrf
                                         <input type="hidden" name="id" id="id">
                                         <div class="form-group">
@@ -47,6 +47,11 @@
                                             <label for="company_name">Company Name</label>
                                             <input type="text" class="form-control" id="company_name" name="company_name" placeholder="Enter Company Name">
                                         </div>
+                                        <div class="form-group">
+                                            <label for="image">Product Image</label>
+                                            <input type="file" class="form-control-file" name="image" id="image">
+                                        </div>
+                                        
 
                                     </div>
                                     <div class="modal-footer">
@@ -130,27 +135,51 @@
             
         });
 
-
-        $('button[name="btnSave"]').click(function(){
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        // $(document).on('submit', '#product_form', function (e){
+        //     e.preventDefault();
+        //     let formData = new FormData($('product_form')[0])
+        //     // console.log($("#image").val());
+        //     // var data = new FormData($('#product-form'));
+        //     // consol.log(data);
+        //     $.ajax({
+        //         url:"{{ route('seller.add_product') }}",
+        //         type: "POST",
+        //         data:formData,
+        //         dataType:"json",
+        //         contentType: false,
+        //         processData: false,
+        //         success:function(response){
+        //             $('#modal').modal('hide');
+        //             reset();
+        //             console.log(response);
+        //             drawProductRow(response.products);
+        //         },
+        //     });
+                
             
-                $.ajax({
-                    url:"{{ route('seller.add_product') }}",
-                    type: "POST",
-                    data:{
-                        "_token": "{{ csrf_token() }}",
-                        product_name:$('input[name="product_name"]').val(),
-                        product_price:$('input[name="product_price"]').val(),
-                        company_name:$('input[name="company_name"]').val()
-                    },
-                    dataType:"json",
-                    success:function(response){
-                        $('#modal').modal('hide');
-                        reset();
-                        console.log(response);
-                        drawProductRow(response.products);
-                    },
-                });
-            
+        // });
+        $(document).on('click', '#btnSave', function (){
+            let formData = new FormData($('#product_form')[0]);
+            $.ajax({
+                url:"{{ route('seller.add_product') }}",
+                type: "POST",
+                data:formData,
+                dataType:"json",
+                contentType: false,
+                processData: false,
+                success:function(response){
+                    $('#modal').modal('hide');
+                    reset();
+                    console.log(response);
+                    drawProductRow(response.products);
+                },
+            });
+        
         });
 
         $(document).on('click', '#btnEdit', function () {
