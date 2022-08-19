@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Product;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
@@ -35,19 +36,37 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $product = new Product;
-        $product->product_name = $request->input('product_name');
-        $product->product_price = $request->input('product_price');
-        $product->company_name = $request->input('company_name');
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $fileName = $file->getClientOriginalName();
-            $file->move('img',$fileName );
-            $product->image = $fileName;
-        }
-        $product->save();
+        $validator = Validator::make($request->all(),[
+            'product_name' => 'required|max:191',
+            'product_price' => 'required',
+            'company_name' => 'required|max:191',
+            'image' => 'image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'success' => false,
+                'message'=> $validator->messages(),
+                'products'=>Product::all()
 
-        return ['success'=>true, 'message'=> 'Inserted Successfully', 'products'=>Product::all()];
+            ]);
+        }
+        else{
+            $product = new Product;
+            $product->product_name = $request->input('product_name');
+            $product->product_price = $request->input('product_price');
+            $product->company_name = $request->input('company_name');
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $fileName = $file->getClientOriginalName();
+                $file->move('img',$fileName );
+                $product->image = $fileName;
+            }
+            $product->save();
+
+            return ['success'=>true, 'message'=> 'Inserted Successfully', 'products'=>Product::all()];
+        }
+
+        
           
         
     }

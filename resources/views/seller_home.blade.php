@@ -47,8 +47,11 @@
                                             <label for="company_name">Company Name</label>
                                             <input type="text" class="form-control" id="company_name" name="company_name" placeholder="Enter Company Name">
                                         </div>
-                                        <div class="form-group">
+                                        
+                                        <div class="form-group" >
+                                            <div id="imageField" class="mb-2"></div>
                                             <label for="image">Product Image</label>
+                                            
                                             <input type="file" class="form-control-file" name="image" id="image">
                                         </div>
                                         
@@ -70,6 +73,7 @@
                             <thead>
                               <tr>
                                 <th scope="col">SL</th>
+                                <th scope="col">Product Image</th>
                                 <th scope="col">Product Name</th>
                                 <th scope="col">Product Price</th>
                                 <th scope="col">Company Name</th>
@@ -97,9 +101,11 @@
     function drawProductRow (products) {
         var product_data = '';
         var i=1;
+        let base = '{{ asset("img") }}';
         $.each(products,function(key,value){
             product_data += '<tr>';
             product_data += '<td>'+i+'</td>';
+            product_data += '<td><img class="rounded img-fluid" width="100" height="130" src="'+base+'/'+value.image+'"> </td>';
             product_data += '<td>'+value.product_name+'</td>';
             product_data += '<td>'+value.product_price+'</td>';
             product_data += '<td>'+value.company_name+'</td>';
@@ -140,31 +146,10 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        // $(document).on('submit', '#product_form', function (e){
-        //     e.preventDefault();
-        //     let formData = new FormData($('product_form')[0])
-        //     // console.log($("#image").val());
-        //     // var data = new FormData($('#product-form'));
-        //     // consol.log(data);
-        //     $.ajax({
-        //         url:"{{ route('seller.add_product') }}",
-        //         type: "POST",
-        //         data:formData,
-        //         dataType:"json",
-        //         contentType: false,
-        //         processData: false,
-        //         success:function(response){
-        //             $('#modal').modal('hide');
-        //             reset();
-        //             console.log(response);
-        //             drawProductRow(response.products);
-        //         },
-        //     });
-                
-            
-        // });
+        
         $(document).on('click', '#btnSave', function (){
             let formData = new FormData($('#product_form')[0]);
+            // $('#imageField').hide();
             $.ajax({
                 url:"{{ route('seller.add_product') }}",
                 type: "POST",
@@ -186,6 +171,7 @@
             $('#modal').find('.modal-title').text('Edit Product');
             $('#btnUpdate').show();
             $('#btnSave').hide();
+            // $('#imageField').show();
             var id = $(this).val();
             console.log(id);
             reset();
@@ -193,18 +179,20 @@
                 url: "/seller/edit_product/"+id,
                 type: "get",
                 success:function(response){
+                    let base = '{{ asset("img") }}';
                     $.each(response,function(key,value){
                         $('#id').val(value.id);
                         $('#product_name').val(value.product_name);
                         $('#product_price').val(value.product_price);
                         $('#company_name').val(value.company_name);
-                        $('#modal').modal('show');
                     })
+                    $('#imageField').append('<p style="margin:0">Uploaded Image </p>');
+                    $('#imageField').append('<img class="rounded img-fluid" width="100" height="100" src="'+base+'/'+response.product.image+'">');
+                    $('#modal').modal('show');
                 },
             });
-                
-            
         });
+
         $(document).on('click', '#btnUpdate', function () {
             var id = $('input[name="id"]').val()
             console.log(id);
